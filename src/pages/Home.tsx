@@ -35,27 +35,27 @@ export default function Home() {
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-36">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-blue-600 dark:text-blue-500">
+            <div className="flex flex-col items-center space-y-6 text-center">
+              <div className="space-y-4">
+                <p className="text-base md:text-lg font-medium text-blue-600 dark:text-blue-500">
                   Documentation that evolves with your project
                 </p>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-blue-600 dark:text-blue-500">
+                <h1 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl text-blue-600 dark:text-blue-500">
                   Beautiful documentation
                 </h1>
-                <h2 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+                <h2 className="text-5xl font-bold tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl">
                   that your users will love
                 </h2>
-                <p className="mx-auto max-w-[700px] text-lg text-muted-foreground md:text-xl">
+                <p className="mx-auto max-w-[800px] text-xl text-muted-foreground md:text-2xl lg:text-3xl">
                   Create stunning docs with interactive examples, powerful search, and a
                   seamless developer experience. Simple to use, and impossible to outgrow.
                 </p>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button asChild size="lg">
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
+                <Button asChild size="lg" className="text-lg px-8 py-6 h-auto">
                   <Link to="/docs">Get Started</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 h-auto">
                   <Link to="/api">API Reference</Link>
                 </Button>
               </div>
