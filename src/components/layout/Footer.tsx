@@ -35,6 +35,14 @@ export function Footer() {
           >
             GitHub
           </a>
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            LinkedIn
+          </a>
         </div>
       </div>
     </footer>
