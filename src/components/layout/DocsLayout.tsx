@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { MenuIcon } from "lucide-react";
 import Navbar from "./Navbar";
-import Footer from "./Footer";
+import { Footer } from "./Footer";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
