@@ -2,13 +2,22 @@
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-// Add Prism.js styles
-const prismStyles = `
+// This would normally be imported from the npm package
+// import Prism from 'prismjs';
+// import 'prismjs/themes/prism-tomorrow.css';
+// import 'prismjs/components/prism-javascript';
+// import 'prismjs/components/prism-jsx';
+// import 'prismjs/components/prism-typescript';
+// import 'prismjs/components/prism-bash';
+
+// Dracula theme styles for Prism
+const prismThemeStyles = `
   code[class*="language-"],
   pre[class*="language-"] {
     color: #f8f8f2;
     background: none;
-    font-family: "JetBrains Mono", Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     text-align: left;
     white-space: pre;
     word-spacing: normal;
@@ -19,7 +28,6 @@ const prismStyles = `
     hyphens: none;
   }
 
-  /* Code blocks */
   pre[class*="language-"] {
     padding: 1em;
     margin: .5em 0;
@@ -32,7 +40,6 @@ const prismStyles = `
     background: #282a36;
   }
 
-  /* Inline code */
   :not(pre) > code[class*="language-"] {
     padding: .1em;
     border-radius: .3em;
@@ -122,51 +129,58 @@ interface PrismCodeBlockProps {
   className?: string;
 }
 
-export function PrismCodeBlock({ language = "js", filename, code, className }: PrismCodeBlockProps) {
+export function PrismCodeBlock({ language = "javascript", filename, code, className }: PrismCodeBlockProps) {
   const codeRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Dynamically import Prism.js
+    // In a real implementation, we would use the imported Prism library
+    // Prism.highlightElement(codeRef.current);
+    
+    // For this demo, we'll load Prism from CDN
     const loadPrism = async () => {
-      try {
-        // Add Prism.js script to the document
+      if (!document.getElementById('prism-script')) {
+        // Add theme styles
+        const styleElement = document.createElement('style');
+        styleElement.id = 'prism-theme-styles';
+        styleElement.innerHTML = prismThemeStyles;
+        document.head.appendChild(styleElement);
+        
+        // Load Prism script
         const script = document.createElement('script');
+        script.id = 'prism-script';
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
         script.async = true;
-        document.body.appendChild(script);
-
-        // Add language support
-        const langScript = document.createElement('script');
-        langScript.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
-        langScript.async = true;
-        document.body.appendChild(langScript);
-
-        // Add Prism.js styles
-        if (!document.getElementById('prism-styles')) {
-          const style = document.createElement('style');
-          style.id = 'prism-styles';
-          style.innerHTML = prismStyles;
-          document.head.appendChild(style);
-        }
-
-        // Wait for Prism to load
+        
+        // Load language support
         script.onload = () => {
-          // @ts-ignore
-          if (window.Prism && codeRef.current) {
+          const languageScript = document.createElement('script');
+          languageScript.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
+          languageScript.onload = () => {
             // @ts-ignore
-            window.Prism.highlightElement(codeRef.current);
-          }
+            if (window.Prism && codeRef.current) {
+              // @ts-ignore
+              window.Prism.highlightElement(codeRef.current);
+            }
+          };
+          document.body.appendChild(languageScript);
         };
-      } catch (error) {
-        console.error('Failed to load Prism.js:', error);
+        
+        document.body.appendChild(script);
+      } else {
+        // If Prism is already loaded, just highlight the element
+        // @ts-ignore
+        if (window.Prism && codeRef.current) {
+          // @ts-ignore
+          window.Prism.highlightElement(codeRef.current);
+        }
       }
     };
-
+    
     loadPrism();
   }, [language, code]);
 
   return (
-    <div className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}>
+    <div className={cn("rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden", className)}>
       <div className="flex items-center justify-between px-4 py-2 border-b">
         <div className="flex items-center gap-2">
           <div className="flex space-x-1">
@@ -180,7 +194,7 @@ export function PrismCodeBlock({ language = "js", filename, code, className }: P
         </div>
         <div className="text-xs text-muted-foreground">{language}</div>
       </div>
-      <pre className="p-4 overflow-x-auto text-sm bg-[#282a36] rounded-b-lg">
+      <pre className="m-0 p-0 bg-[#282a36]">
         <code ref={codeRef} className={`language-${language}`}>
           {code}
         </code>
