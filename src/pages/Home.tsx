@@ -15,7 +15,31 @@ const docs = createDocs({
   description: 'Beautiful, searchable docs',
   theme: 'elegant',
   codeHighlight: true,
-  interactive: true
+  interactive: true,
+  
+  // Color configuration
+  colors: {
+    primary: '#3B82F6',    // Blue
+    secondary: '#10B981',  // Green
+    accent: '#F59E0B',     // Amber
+    success: '#22C55E',    // Green
+    warning: '#EAB308',    // Yellow
+    error: '#EF4444',      // Red
+    background: '#FFFFFF', // White
+    text: '#1F2937'        // Dark gray
+  },
+  
+  // Typography settings
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+    headings: {
+      fontWeight: 700,
+      lineHeight: 1.2
+    },
+    code: {
+      fontFamily: 'JetBrains Mono, monospace'
+    }
+  }
 })
 
 // Add interactive examples
@@ -25,6 +49,7 @@ docs.addExample({
   language: 'javascript'
 })
 
+// Build the documentation site
 docs.build()`
 
 export default function Home() {
@@ -52,10 +77,10 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
-                <Button asChild size="lg" className="text-lg px-8 py-6 h-auto">
+                <Button asChild size="lg">
                   <Link to="/docs">Get Started</Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 h-auto">
+                <Button asChild variant="outline" size="lg">
                   <Link to="/api">API Reference</Link>
                 </Button>
               </div>
