@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button"
-import { PrismCodeBlock } from "@/components/ui/prism-code-block"
+import { CodeSyntaxHighlighter } from "@/components/ui/code-syntax-highlighter"
 import { FeatureCard } from "@/components/ui/feature-card"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
@@ -92,7 +92,7 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
           <div className="container px-4 md:px-6">
             <div className="mx-auto max-w-3xl">
-              <PrismCodeBlock 
+              <CodeSyntaxHighlighter 
                 filename="example.js" 
                 code={codeExample} 
                 language="javascript" 
