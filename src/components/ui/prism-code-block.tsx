@@ -1,74 +1,8 @@
 
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import Prism from "prismjs";
-import "prismjs/themes/prism-tomorrow.css";
-import "prismjs/components/prism-javascript";
-import "prismjs/components/prism-jsx";
-import "prismjs/components/prism-typescript";
-import "prismjs/components/prism-bash";
 
-// Custom styles to enhance the Prism theme
-const customStyles = `
-  .token.comment,
-  .token.prolog,
-  .token.doctype,
-  .token.cdata {
-    color: #6272a4;
-  }
-
-  .token.punctuation {
-    color: #f8f8f2;
-  }
-
-  .token.property,
-  .token.tag,
-  .token.constant,
-  .token.symbol,
-  .token.deleted {
-    color: #ff79c6;
-  }
-
-  .token.boolean,
-  .token.number {
-    color: #bd93f9;
-  }
-
-  .token.selector,
-  .token.attr-name,
-  .token.string,
-  .token.char,
-  .token.builtin,
-  .token.inserted {
-    color: #50fa7b;
-  }
-
-  .token.operator,
-  .token.entity,
-  .token.url,
-  .language-css .token.string,
-  .style .token.string,
-  .token.variable {
-    color: #f8f8f2;
-  }
-
-  .token.atrule,
-  .token.attr-value,
-  .token.function,
-  .token.class-name {
-    color: #f1fa8c;
-  }
-
-  .token.keyword {
-    color: #8be9fd;
-  }
-
-  .token.regex,
-  .token.important {
-    color: #ffb86c;
-  }
-`;
-
+// We'll add Prism.js via CDN for now, but this can be replaced with npm imports
 interface PrismCodeBlockProps {
   language?: string;
   filename?: string;
@@ -80,22 +14,51 @@ export function PrismCodeBlock({ language = "javascript", filename, code, classN
   const codeRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Add custom styles to enhance the theme
-    if (!document.getElementById('prism-custom-styles')) {
-      const styleElement = document.createElement('style');
-      styleElement.id = 'prism-custom-styles';
-      styleElement.innerHTML = customStyles;
-      document.head.appendChild(styleElement);
-    }
-
-    // Highlight the code element
-    if (codeRef.current) {
-      Prism.highlightElement(codeRef.current);
-    }
+    // Load Prism.js from CDN
+    const loadPrism = async () => {
+      if (!document.getElementById('prism-script')) {
+        // Load Prism CSS
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css';
+        document.head.appendChild(link);
+        
+        // Load Prism JS
+        const script = document.createElement('script');
+        script.id = 'prism-script';
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js';
+        script.async = true;
+        
+        // Load language support
+        script.onload = () => {
+          const languageScript = document.createElement('script');
+          languageScript.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
+          languageScript.onload = () => {
+            // @ts-ignore
+            if (window.Prism && codeRef.current) {
+              // @ts-ignore
+              window.Prism.highlightElement(codeRef.current);
+            }
+          };
+          document.body.appendChild(languageScript);
+        };
+        
+        document.body.appendChild(script);
+      } else {
+        // If Prism is already loaded, just highlight the element
+        // @ts-ignore
+        if (window.Prism && codeRef.current) {
+          // @ts-ignore
+          window.Prism.highlightElement(codeRef.current);
+        }
+      }
+    };
+    
+    loadPrism();
   }, [language, code]);
 
   return (
-    <div className={cn("rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden", className)}>
+    <div className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}>
       <div className="flex items-center justify-between px-4 py-2 border-b">
         <div className="flex items-center gap-2">
           <div className="flex space-x-1">
@@ -109,7 +72,7 @@ export function PrismCodeBlock({ language = "javascript", filename, code, classN
         </div>
         <div className="text-xs text-muted-foreground">{language}</div>
       </div>
-      <pre className="m-0 p-4 bg-[#282a36] rounded-b-lg">
+      <pre className="p-4 overflow-x-auto text-sm bg-[#2d2d2d]">
         <code ref={codeRef} className={`language-${language}`}>
           {code}
         </code>
