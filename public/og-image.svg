@@ -1,0 +1,10 @@
+
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#3B82F6"/>
+  <rect x="100" y="100" width="1000" height="430" rx="12" fill="white"/>
+  <rect x="150" y="150" width="80" height="80" rx="8" fill="#3B82F6"/>
+  <text x="250" y="205" font-family="Arial, sans-serif" font-weight="bold" font-size="48" fill="#1F2937">DocuVerse</text>
+  <text x="150" y="300" font-family="Arial, sans-serif" font-weight="bold" font-size="64" fill="#1F2937">Beautiful documentation</text>
+  <text x="150" y="380" font-family="Arial, sans-serif" font-weight="bold" font-size="64" fill="#1F2937">that your users will love</text>
+  <text x="150" y="460" font-family="Arial, sans-serif" font-size="32" fill="#6B7280">Create stunning docs with interactive examples</text>
+</svg>
