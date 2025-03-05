@@ -1,6 +1,6 @@
 
 import DocsLayout from "@/components/layout/DocsLayout";
-import CodeBlock from "@/components/docs/CodeBlock";
+import { CodeBlock } from "@/components/ui/code-block";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 

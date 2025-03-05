@@ -1,6 +1,6 @@
 
 import DocsLayout from "@/components/layout/DocsLayout";
-import CodeBlock from "@/components/docs/CodeBlock";
+import { CodeBlock } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Configuration = () => {
