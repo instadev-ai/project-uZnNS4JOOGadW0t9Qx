@@ -2,6 +2,7 @@
 import DocsLayout from "@/components/layout/DocsLayout";
 import { CodeBlock } from "@/components/ui/code-block";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FixedCodeExample } from "@/components/ui/fixed-code-example";
 
 const CodeExamples = () => {
   const basicExample = `// Add a simple code example
@@ -139,6 +140,21 @@ export default App;
           <p className="leading-7">
             This adds a simple, non-interactive code example to your documentation. The code will be 
             syntax-highlighted according to the specified language.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight">
+            Configuration Example
+          </h2>
+          <p className="leading-7">
+            Here's an example of a DocuVerse configuration file:
+          </p>
+          
+          <FixedCodeExample />
+          
+          <p className="leading-7">
+            This configuration file sets up the basic project information and output settings.
           </p>
         </div>
 
