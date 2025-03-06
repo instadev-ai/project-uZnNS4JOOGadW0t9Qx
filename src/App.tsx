@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnimatePresence } from "framer-motion";
+import { SearchCommandProvider } from "@/components/docs/SearchCommandProvider";
 import Home from "./pages/Home";
 import Docs from "./pages/Docs";
 import Api from "./pages/Api";
@@ -39,15 +40,23 @@ const AnimatedRoutes = () => {
   );
 };
 
+const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <SearchCommandProvider>
+        <AnimatedRoutes />
+      </SearchCommandProvider>
+    </BrowserRouter>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" enableSystem>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <AnimatedRoutes />
-        </BrowserRouter>
+        <AppRoutes />
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

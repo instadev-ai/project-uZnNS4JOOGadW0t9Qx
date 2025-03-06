@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import { DocSearch } from "@/components/docs/DocSearch"
+import { motion } from "framer-motion"
 
 export default function Docs() {
   return (
@@ -10,16 +12,31 @@ export default function Docs() {
       <Header />
       <main className="flex-1">
         <div className="container py-12">
-          <div className="flex flex-col items-start gap-4 md:flex-row">
-            <div className="flex-1 space-y-4">
-              <div>
-                <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">Documentation</h1>
-                <p className="text-lg text-muted-foreground">
-                  Learn how to use DocuVerse to create beautiful documentation.
-                </p>
-              </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex flex-col items-center gap-6 text-center mb-8"
+          >
+            <h1 className="scroll-m-20 text-5xl font-bold tracking-tight">Documentation</h1>
+            <p className="text-xl text-muted-foreground max-w-3xl">
+              Learn how to use DocuVerse to create beautiful documentation.
+            </p>
+            <DocSearch />
+          </motion.div>
+          
+          <div className="flex flex-col items-start gap-4 md:flex-row mt-12">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex-1 space-y-4"
+            >
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <div className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg">
+                <motion.div 
+                  whileHover={{ scale: 1.03 }}
+                  className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg"
+                >
                   <h3 className="font-semibold">
                     <Link to="/docs/installation" className="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                     Installation
@@ -27,8 +44,11 @@ export default function Docs() {
                   <p className="text-sm text-muted-foreground">
                     Learn how to install DocuVerse in your project.
                   </p>
-                </div>
-                <div className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg">
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.03 }}
+                  className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg"
+                >
                   <h3 className="font-semibold">
                     <Link to="/docs/quick-start" className="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                     Quick Start
@@ -36,8 +56,11 @@ export default function Docs() {
                   <p className="text-sm text-muted-foreground">
                     Get up and running with DocuVerse in minutes.
                   </p>
-                </div>
-                <div className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg">
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.03 }}
+                  className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg"
+                >
                   <h3 className="font-semibold">
                     <Link to="/docs/code-examples" className="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                     Code Examples
@@ -45,8 +68,11 @@ export default function Docs() {
                   <p className="text-sm text-muted-foreground">
                     Learn how to add interactive code examples to your docs.
                   </p>
-                </div>
-                <div className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg">
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.03 }}
+                  className="group relative rounded-lg border p-6 shadow-md transition-shadow hover:shadow-lg"
+                >
                   <h3 className="font-semibold">
                     <Link to="/docs/configuration" className="absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" />
                     Configuration
@@ -54,10 +80,15 @@ export default function Docs() {
                   <p className="text-sm text-muted-foreground">
                     Learn how to configure DocuVerse to match your needs.
                   </p>
-                </div>
+                </motion.div>
               </div>
-            </div>
-            <div className="w-full md:w-[250px] lg:w-[300px] space-y-4">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="w-full md:w-[250px] lg:w-[300px] space-y-4"
+            >
               <div className="rounded-lg border p-4">
                 <h3 className="font-semibold">Need help?</h3>
                 <p className="text-sm text-muted-foreground mt-2">
@@ -80,7 +111,7 @@ export default function Docs() {
                   </a>
                 </Button>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </main>
