@@ -10,7 +10,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandTitle
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { useSearchCommand } from "./SearchCommandProvider";
@@ -62,22 +61,40 @@ export function DocSearch() {
   const [query, setQuery] = React.useState("");
   const navigate = useNavigate();
 
-  // Filter docs based on search query
-  const filteredDocs = query === "" 
-    ? docItems 
-    : docItems.filter((item) => {
-        const searchContent = `${item.title} ${item.description} ${item.category}`.toLowerCase();
-        return searchContent.includes(query.toLowerCase());
-      });
+  // Filter docs based on search query (case-insensitive)
+  const filteredDocs = React.useMemo(() => {
+    if (!query.trim()) return docItems;
+    
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    return docItems.filter((item) => {
+      const searchContent = [
+        item.title,
+        item.description,
+        item.category
+      ].join(" ").toLowerCase();
+      
+      return searchContent.includes(normalizedQuery);
+    });
+  }, [query]);
 
   // Group docs by category
-  const groupedDocs = filteredDocs.reduce<Record<string, DocItem[]>>((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  const groupedDocs = React.useMemo(() => {
+    return filteredDocs.reduce<Record<string, DocItem[]>>((acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    }, {});
+  }, [filteredDocs]);
+
+  // Reset query when dialog closes
+  React.useEffect(() => {
+    if (!isOpen) {
+      setQuery("");
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {});
+  }, [isOpen]);
 
   return (
     <>
@@ -94,34 +111,6 @@ export function DocSearch() {
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
-      <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
-        <CommandInput 
-          placeholder="Search documentation..." 
-          value={query}
-          onValueChange={setQuery}
-          autoFocus
-        />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          {Object.entries(groupedDocs).map(([category, items]) => (
-            <CommandGroup key={category} heading={category}>
-              {items.map((item) => (
-                <CommandItem
-                  key={item.href}
-                  onSelect={() => {
-                    navigate(item.href);
-                    setIsOpen(false);
-                  }}
-                  className="flex flex-col items-start"
-                >
-                  <div className="font-medium">{item.title}</div>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          ))}
-        </CommandList>
-      </CommandDialog>
     </>
   );
 }

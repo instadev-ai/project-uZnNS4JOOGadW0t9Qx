@@ -59,22 +59,40 @@ export function GlobalSearch() {
   const [query, setQuery] = React.useState("");
   const navigate = useNavigate();
 
-  // Filter docs based on search query
-  const filteredDocs = query === "" 
-    ? docItems 
-    : docItems.filter((item) => {
-        const searchContent = `${item.title} ${item.description} ${item.category}`.toLowerCase();
-        return searchContent.includes(query.toLowerCase());
-      });
+  // Filter docs based on search query (case-insensitive)
+  const filteredDocs = React.useMemo(() => {
+    if (!query.trim()) return docItems;
+    
+    const normalizedQuery = query.toLowerCase().trim();
+    
+    return docItems.filter((item) => {
+      const searchContent = [
+        item.title,
+        item.description,
+        item.category
+      ].join(" ").toLowerCase();
+      
+      return searchContent.includes(normalizedQuery);
+    });
+  }, [query]);
 
   // Group docs by category
-  const groupedDocs = filteredDocs.reduce<Record<string, DocItem[]>>((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  const groupedDocs = React.useMemo(() => {
+    return filteredDocs.reduce<Record<string, DocItem[]>>((acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    }, {});
+  }, [filteredDocs]);
+
+  // Reset query when dialog closes
+  React.useEffect(() => {
+    if (!isOpen) {
+      setQuery("");
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {});
+  }, [isOpen]);
 
   return (
     <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
