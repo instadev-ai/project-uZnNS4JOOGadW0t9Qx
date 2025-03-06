@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AnimatePresence } from "framer-motion";
 import { SearchCommandProvider } from "@/components/docs/SearchCommandProvider";
+import { GlobalSearch } from "@/components/docs/GlobalSearch";
 import Home from "./pages/Home";
 import Docs from "./pages/Docs";
 import Api from "./pages/Api";
@@ -44,6 +45,7 @@ const AppRoutes = () => {
   return (
     <BrowserRouter>
       <SearchCommandProvider>
+        <GlobalSearch />
         <AnimatedRoutes />
       </SearchCommandProvider>
     </BrowserRouter>
