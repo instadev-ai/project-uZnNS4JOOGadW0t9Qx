@@ -98,6 +98,7 @@ export function DocSearch() {
           placeholder="Search documentation..." 
           value={query}
           onValueChange={setQuery}
+          autoFocus
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>

@@ -14,7 +14,9 @@ export function SearchCommandProvider({ children }: { children: React.ReactNode 
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const toggle = () => setIsOpen((prev) => !prev);
+  const toggle = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   // Close the command menu when the location changes
   useEffect(() => {
