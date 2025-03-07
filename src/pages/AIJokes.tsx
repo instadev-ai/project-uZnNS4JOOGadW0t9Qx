@@ -37,32 +37,12 @@ export default function AIJokes() {
   const [jokes, setJokes] = useState<Joke[]>([]);
   const [currentJoke, setCurrentJoke] = useState<string>("");
   const [favoriteJokes, setFavoriteJokes] = useState<Joke[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("generator");
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const { toast } = useToast();
-
-  // Check authentication status
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      setIsAuthenticated(!!data.session);
-      
-      // Subscribe to auth changes
-      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-        setIsAuthenticated(!!session);
-      });
-      
-      return () => {
-        authListener.subscription.unsubscribe();
-      };
-    };
-    
-    checkAuth();
-  }, []);
 
   // Fetch jokes from Supabase
   const fetchJokes = async () => {
@@ -72,14 +52,12 @@ export default function AIJokes() {
     try {
       console.log("Fetching jokes from Supabase...");
       
-      // For debugging, let's first try to get all jokes without RLS filtering
       const { data: allJokes, error: allJokesError } = await supabase
         .from('ai_jokes')
         .select('*')
         .order('created_at', { ascending: false });
       
-      console.log("All jokes (might be filtered by RLS):", allJokes);
-      console.log("Error if any:", allJokesError);
+      console.log("All jokes:", allJokes);
       
       if (allJokesError) {
         throw allJokesError;
@@ -119,7 +97,7 @@ export default function AIJokes() {
   // Load jokes on component mount
   useEffect(() => {
     fetchJokes();
-  }, [isAuthenticated]); // Refetch when auth state changes
+  }, []);
 
   // Function to get a random joke
   const getRandomJoke = () => {
@@ -143,15 +121,6 @@ export default function AIJokes() {
   // Function to save a joke to Supabase
   const saveJoke = async () => {
     if (!currentJoke) return;
-    
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to save jokes.",
-        variant: "destructive"
-      });
-      return;
-    }
     
     setIsSaving(true);
     
@@ -204,15 +173,6 @@ export default function AIJokes() {
 
   // Function to toggle favorite status
   const toggleFavorite = async (joke: Joke) => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to favorite jokes.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     try {
       const newFavoriteStatus = !joke.is_favorite;
       
@@ -250,15 +210,6 @@ export default function AIJokes() {
 
   // Function to delete a joke
   const deleteJoke = async (id: number) => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to delete jokes.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     setIsDeleting(true);
     
     try {
@@ -291,48 +242,6 @@ export default function AIJokes() {
     }
   };
 
-  // Function to handle sign in
-  const signIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: window.location.origin + '/ai-jokes'
-        }
-      });
-      
-      if (error) throw error;
-    } catch (error) {
-      console.error("Error signing in:", error);
-      toast({
-        title: "Sign in failed",
-        description: "There was a problem signing in. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  // Function to handle sign out
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
-        variant: "default"
-      });
-    } catch (error) {
-      console.error("Error signing out:", error);
-      toast({
-        title: "Sign out failed",
-        description: "There was a problem signing out. Please try again.",
-        variant: "destructive"
-      });
-    }
-  };
-
   // Function to manually refresh jokes
   const refreshJokes = () => {
     fetchJokes();
@@ -359,20 +268,11 @@ export default function AIJokes() {
               Need a laugh? Generate some AI-themed jokes to brighten your day!
             </p>
             
-            {/* Authentication buttons */}
+            {/* Refresh button */}
             <div className="flex gap-4 mt-2">
-              {!isAuthenticated ? (
-                <Button onClick={signIn} variant="outline">
-                  Sign in to save jokes
-                </Button>
-              ) : (
-                <Button onClick={signOut} variant="outline">
-                  Sign out
-                </Button>
-              )}
-              
-              <Button onClick={refreshJokes} variant="ghost" size="icon">
+              <Button onClick={refreshJokes} variant="outline" size="sm" className="gap-2">
                 <RefreshCw className="h-4 w-4" />
+                Refresh Jokes
               </Button>
             </div>
             
@@ -388,7 +288,7 @@ export default function AIJokes() {
           <Tabs defaultValue="generator" value={activeTab} onValueChange={setActiveTab} className="max-w-4xl mx-auto">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="generator">Generator</TabsTrigger>
-              <TabsTrigger value="collection">My Collection</TabsTrigger>
+              <TabsTrigger value="collection">Collection</TabsTrigger>
               <TabsTrigger value="favorites">Favorites</TabsTrigger>
             </TabsList>
             
@@ -438,7 +338,7 @@ export default function AIJokes() {
                       onClick={saveJoke} 
                       variant="outline" 
                       size="lg"
-                      disabled={isSaving || !isAuthenticated}
+                      disabled={isSaving}
                     >
                       {isSaving ? "Saving..." : "Save Joke"}
                     </Button>
@@ -450,8 +350,8 @@ export default function AIJokes() {
             <TabsContent value="collection" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Your Joke Collection</CardTitle>
-                  <CardDescription>All the AI jokes you've saved</CardDescription>
+                  <CardTitle>Joke Collection</CardTitle>
+                  <CardDescription>All the AI jokes in the database</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {isLoading ? (
@@ -470,7 +370,6 @@ export default function AIJokes() {
                                 size="icon" 
                                 onClick={() => toggleFavorite(joke)}
                                 className={joke.is_favorite ? "text-yellow-500" : ""}
-                                disabled={!isAuthenticated}
                               >
                                 <ThumbsUp className="h-4 w-4" />
                               </Button>
@@ -478,7 +377,6 @@ export default function AIJokes() {
                                 variant="ghost" 
                                 size="icon"
                                 onClick={() => deleteJoke(joke.id)}
-                                disabled={!isAuthenticated}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -490,7 +388,7 @@ export default function AIJokes() {
                     </ul>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
-                      <p>You haven't saved any jokes yet.</p>
+                      <p>No jokes found in the collection.</p>
                       <p className="mt-2">Generate and save some jokes to see them here!</p>
                     </div>
                   )}
@@ -501,8 +399,8 @@ export default function AIJokes() {
             <TabsContent value="favorites" className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Your Favorite Jokes</CardTitle>
-                  <CardDescription>The AI jokes you've marked as favorites</CardDescription>
+                  <CardTitle>Favorite Jokes</CardTitle>
+                  <CardDescription>The AI jokes marked as favorites</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {isLoading ? (
@@ -524,7 +422,6 @@ export default function AIJokes() {
                                 size="icon" 
                                 onClick={() => toggleFavorite(joke)}
                                 className="text-yellow-500"
-                                disabled={!isAuthenticated}
                               >
                                 <ThumbsUp className="h-4 w-4" />
                               </Button>
@@ -536,7 +433,7 @@ export default function AIJokes() {
                     </ul>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
-                      <p>You don't have any favorite jokes yet.</p>
+                      <p>No favorite jokes yet.</p>
                       <p className="mt-2">Mark jokes as favorites to see them here!</p>
                     </div>
                   )}
