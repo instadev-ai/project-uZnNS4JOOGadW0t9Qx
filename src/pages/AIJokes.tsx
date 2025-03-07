@@ -66,6 +66,12 @@ export default function AIJokes() {
       if (allJokes && allJokes.length > 0) {
         setJokes(allJokes);
         setFavoriteJokes(allJokes.filter(joke => joke.is_favorite));
+        
+        // Set an initial joke if none is selected
+        if (!currentJoke) {
+          const randomIndex = Math.floor(Math.random() * allJokes.length);
+          setCurrentJoke(allJokes[randomIndex].content);
+        }
       } else {
         console.log("No jokes found in database, using fallback jokes");
         // If no jokes in database, use fallback jokes
@@ -76,6 +82,12 @@ export default function AIJokes() {
           created_at: new Date().toISOString()
         }));
         setJokes(fallbackData);
+        
+        // Set an initial joke if none is selected
+        if (!currentJoke) {
+          const randomIndex = Math.floor(Math.random() * fallbackJokes.length);
+          setCurrentJoke(fallbackJokes[randomIndex]);
+        }
       }
     } catch (error) {
       console.error("Error fetching jokes:", error);
@@ -89,6 +101,12 @@ export default function AIJokes() {
         created_at: new Date().toISOString()
       }));
       setJokes(fallbackData);
+      
+      // Set an initial joke if none is selected
+      if (!currentJoke) {
+        const randomIndex = Math.floor(Math.random() * fallbackJokes.length);
+        setCurrentJoke(fallbackJokes[randomIndex]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -299,7 +317,11 @@ export default function AIJokes() {
                   <CardDescription>Click the button to generate a random AI-related joke</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {currentJoke ? (
+                  {isLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : currentJoke ? (
                     <motion.p 
                       key={currentJoke}
                       initial={{ opacity: 0 }}
