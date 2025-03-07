@@ -35,6 +35,12 @@ export function Header() {
           >
             API
           </Link>
+          <Link
+            to="/ai-jokes"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          >
+            AI Jokes
+          </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <div className="w-full flex-1 md:w-auto md:flex-none">

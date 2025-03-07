@@ -11,6 +11,7 @@ import { GlobalSearch } from "@/components/docs/GlobalSearch";
 import Home from "./pages/Home";
 import Docs from "./pages/Docs";
 import Api from "./pages/Api";
+import AIJokes from "./pages/AIJokes";
 import NotFound from "./pages/NotFound";
 
 // Import documentation pages
@@ -35,6 +36,7 @@ const AnimatedRoutes = () => {
         <Route path="/docs/code-examples" element={<CodeExamples />} />
         <Route path="/docs/configuration" element={<Configuration />} />
         <Route path="/api" element={<Api />} />
+        <Route path="/ai-jokes" element={<AIJokes />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
